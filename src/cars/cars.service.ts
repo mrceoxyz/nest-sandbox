@@ -123,6 +123,15 @@ export class CarsService {
     });
   }
 
+  getEngine() {
+    return this.engine.map((engine) => {
+      return {
+        ...engine,
+        car: this.cars.find((car) => car.id === engine.carID),
+      };
+    });
+  }
+
   getCarByID(id: number) {
     const car = this.cars.find((car) => car.id === id);
     const engine = this.engine.find((engine) => engine.carID === car?.id);
