@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class CreateCarDto {
+export class UpdateCarDto {
   @IsString()
-  @MinLength(3)
+  @IsNotEmpty()
   make: string;
 
   @IsString()
-  @MinLength(3)
+  @IsNotEmpty()
   model: string;
 
   @IsNotEmpty()
+  @IsNumber()
   year: number;
 }

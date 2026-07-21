@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCarDto } from './dto/create-car.dto';
 import { CreateEngineDto } from './dto/create-engine.dto';
+import { UpdateCarDto } from './dto/update-car.dto';
 
 @Injectable()
 export class CarsService {
@@ -128,6 +126,9 @@ export class CarsService {
   getCarByID(id: number) {
     const car = this.cars.find((car) => car.id === id);
     const engine = this.engine.find((engine) => engine.carID === car?.id);
+    if (!car) {
+      throw new NotFoundException(`Car with ID ${id} not found`);
+    }
     return {
       car,
       engine,
@@ -138,6 +139,9 @@ export class CarsService {
     const car = this.cars.find(
       (car) => car.model.toLowerCase() === model.toLowerCase(),
     );
+    if (!car) {
+      throw new NotFoundException(`Car with model ${model} not found`);
+    }
     const engine = this.engine.find((engine) => engine.carID === car?.id);
     return {
       car,
@@ -149,6 +153,9 @@ export class CarsService {
     const cars = this.cars.filter(
       (car) => car.make.toLowerCase() === make.toLowerCase(),
     );
+    if (!cars.length) {
+      throw new NotFoundException(`Car with make ${make} not found`);
+    }
     const engines = this.engine.filter((engine) =>
       cars.some((car) => car.id === engine.carID),
     );
@@ -184,10 +191,28 @@ export class CarsService {
   }
 
   deleteCar(id: number) {
-    const car = this.cars.splice(+id, 1);
+    const car = this.cars.find((car) => car.id === id);
+    if (!car) {
+      throw new NotFoundException(`Car with ID ${id} not found`);
+    }
+    this.cars.splice(+id, 1);
     return {
       message: 'Car deleted',
       ...car,
+    };
+  }
+
+  editCar(id: number, updateCarDto: UpdateCarDto) {
+    const matchingCar = this.cars.find((car) => car.id === id);
+    if (!matchingCar) {
+      throw new NotFoundException(`Car with ID ${id} not found`);
+    }
+    matchingCar.make = updateCarDto.make;
+    matchingCar.model = updateCarDto.model;
+    matchingCar.year = updateCarDto.year;
+    return {
+      message: 'Car updated',
+      ...matchingCar,
     };
   }
 }
