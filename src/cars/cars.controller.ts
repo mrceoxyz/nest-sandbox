@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Body,
   Controller,
@@ -6,22 +8,24 @@ import {
   Param,
   Post,
   Put,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
-import { CreateCarDto } from './dto/create-car.dto';
-import { CreateEngineDto } from './dto/create-engine.dto';
-import { UpdateCarDto } from './dto/update-car.dto';
 import { CarsGuard } from './cars.guard';
 import { UseGuards } from '@nestjs/common';
+import { Prisma } from '../../generated/prisma/client';
 @Controller('cars')
 @UseGuards(CarsGuard)
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
   @Get()
-  findAll() {
-    return this.carsService.getAllCar();
+  findAll(
+    @Query('type') type?: 'Sedan' | 'SUV' | 'Truck' | 'Van' | 'EV' | 'Other',
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.carsService.getAllCar(type);
   }
 
   @Get('engine')
@@ -50,15 +54,15 @@ export class CarsController {
 
   @Post()
   @UseGuards(CarsGuard)
-  createCar(@Body(new ValidationPipe()) createCarDto: CreateCarDto) {
+  createCar(@Body() createCarDto: Prisma.CarCreateInput) {
     return this.carsService.createCar(createCarDto);
   }
 
-  @Post('engine')
-  @UseGuards(CarsGuard)
-  createEngine(@Body(new ValidationPipe()) createEngineDto: CreateEngineDto) {
-    return this.carsService.createEngine(createEngineDto);
-  }
+  // @Post('engine')
+  // @UseGuards(CarsGuard)
+  // createEngine(@Body() createEngineDto: CreateEngineDto) {
+  //   return this.carsService.createEngine(createEngineDto);
+  // }
 
   @Delete(':id')
   @UseGuards(CarsGuard)
@@ -66,9 +70,12 @@ export class CarsController {
     return this.carsService.deleteCar(+id);
   }
 
-  @Put(':id')
-  @UseGuards(CarsGuard)
-  editCar(@Param('id') id: number, @Body() updateCarDto: UpdateCarDto) {
-    return this.carsService.editCar(id, updateCarDto);
-  }
+  // @Put(':id')
+  // @UseGuards(CarsGuard)
+  // editCar(
+  //   @Param('id') id: number,
+  //   @Body() updateCarDto: Prisma.CarUpdateInput,
+  // ) {
+  //   return this.carsService.editCar(id, updateCarDto);
+  // }
 }
