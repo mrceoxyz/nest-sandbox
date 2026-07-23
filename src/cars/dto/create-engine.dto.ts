@@ -1,32 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateEngineDto {
   @IsString()
-  @IsNotEmpty()
-  size: string;
+  engineType: string;
 
-  @IsString()
-  @IsNotEmpty()
-  cc: string;
+  @IsNumber()
+  horsePower: number;
 
-  @IsString()
-  @IsNotEmpty()
-  fuelType: string;
-
-  @IsString()
-  @IsNotEmpty()
-  power: string;
-
-  @IsString()
-  @IsNotEmpty()
-  torque: string;
-
-  @IsString()
-  @IsNotEmpty()
-  type: string;
-
-  @IsBoolean()
-  @IsNotEmpty()
-  isEv: boolean;
+  @IsNumber()
+  displacement: number;
 }

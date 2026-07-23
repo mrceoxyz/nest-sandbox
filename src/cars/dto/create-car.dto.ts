@@ -1,43 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsEnum, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, ValidateNested } from 'class-validator';
+import { CreateEngineDto } from './create-engine.dto';
 
 export class CreateCarDto {
   @IsString()
-  @MinLength(3)
-  @IsNotEmpty()
   make: string;
 
   @IsString()
-  @MinLength(3)
-  @IsNotEmpty()
   model: string;
 
-  @IsNotEmpty()
-  year: number;
-
-  @IsNotEmpty()
   @IsString()
-  @IsEnum([
-    'SUV',
-    'Sedan',
-    'Hatchback',
-    'Coupe',
-    'Convertible',
-    'Truck',
-    'Van',
-    'Wagon',
-    'EV',
-    'Other',
-  ])
-  type:
-    | 'SUV'
-    | 'Sedan'
-    | 'Hatchback'
-    | 'Coupe'
-    | 'Convertible'
-    | 'Truck'
-    | 'Van'
-    | 'Wagon'
-    | 'EV'
-    | 'Other';
+  year: string;
+
+  @ValidateNested()
+  @Type(() => CreateEngineDto)
+  engine: CreateEngineDto;
 }
